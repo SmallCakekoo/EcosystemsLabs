@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>APIs Demo - Búsqueda de Anime</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header class="header">
+        <h1 class="title">APIs Demo</h1>
+        <p class="subtitle">Prueba diferentes APIs con estas tarjetas</p>
+      </header>
+
+      <main class="main">
+        <!-- Grid de tarjetas pequeñas (APIs simples) -->
+        <div class="small-cards-grid">
+          <!-- Tarjeta de Cat Facts -->
+          <div class="api-card small-card">
+            <div class="card-header">
+              <h3 class="card-title">🐱 Cat Facts</h3>
+              <p class="card-description">Datos curiosos sobre gatos</p>
+            </div>
+
+            <div class="card-content">
+              <button id="catFactBtn" class="api-btn">Obtener Dato</button>
+            </div>
+
+            <!-- Resultados de Cat Facts -->
+            <div class="card-results">
+              <div
+                id="catFactsLoading"
+                class="state-container"
+                style="display: none"
+              >
+                <div class="loading-spinner"></div>
+                <p class="loading-text">Obteniendo datos...</p>
+              </div>
+
+              <div
+                id="catFactsError"
+                class="state-container"
+                style="display: none"
+              >
+                <div class="error-icon">⚠️</div>
+                <h3 class="error-title">Error</h3>
+                <p class="error-message" id="catFactsErrorMessage"></p>
+                <button class="retry-btn" onclick="fetchCatFacts()">
+                  Reintentar
+                </button>
+              </div>
+
+              <div id="catFactsResults" class="results-container">
+                <p class="placeholder-text">
+                  Aquí aparecerá el dato curioso del gato
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tarjeta de Random Cats -->
+          <div class="api-card small-card">
+            <div class="card-header">
+              <h3 class="card-title">🐱 Random Cats</h3>
+              <p class="card-description">Imágenes de gatos</p>
+            </div>
+
+            <div class="card-content">
+              <button id="colorPaletteBtn" class="api-btn">Cargar Gatos</button>
+            </div>
+
+            <!-- Resultados de Random Cats -->
+            <div class="card-results">
+              <div
+                id="randomCatsLoading"
+                class="state-container"
+                style="display: none"
+              >
+                <div class="loading-spinner"></div>
+                <p class="loading-text">Cargando gatos...</p>
+              </div>
+
+              <div
+                id="randomCatsError"
+                class="state-container"
+                style="display: none"
+              >
+                <div class="error-icon">⚠️</div>
+                <h3 class="error-title">Error</h3>
+                <p class="error-message" id="randomCatsErrorMessage"></p>
+                <button class="retry-btn" onclick="fetchColorPalettes()">
+                  Reintentar
+                </button>
+              </div>
+
+              <div id="randomCatsResults" class="results-container">
+                <p class="placeholder-text">
+                  Aquí aparecerán las imágenes de gatos
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tarjeta de Random User -->
+          <div class="api-card small-card">
+            <div class="card-header">
+              <h3 class="card-title">👤 Random User</h3>
+              <p class="card-description">Usuarios aleatorios</p>
+            </div>
+
+            <div class="card-content">
+              <button id="randomUserBtn" class="api-btn">
+                Generar Usuario
+              </button>
+            </div>
+
+            <!-- Resultados de Random User -->
+            <div class="card-results">
+              <div
+                id="randomUserLoading"
+                class="state-container"
+                style="display: none"
+              >
+                <div class="loading-spinner"></div>
+                <p class="loading-text">Generando usuario...</p>
+              </div>
+
+              <div
+                id="randomUserError"
+                class="state-container"
+                style="display: none"
+              >
+                <div class="error-icon">⚠️</div>
+                <h3 class="error-title">Error</h3>
+                <p class="error-message" id="randomUserErrorMessage"></p>
+                <button class="retry-btn" onclick="fetchRandomUser()">
+                  Reintentar
+                </button>
+              </div>
+
+              <div id="randomUserResults" class="results-container">
+                <p class="placeholder-text">
+                  Aquí aparecerá el usuario generado
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tarjeta grande de Búsqueda de Anime -->
+        <div class="large-card-container">
+          <div class="api-card large-card">
+            <div class="card-header">
+              <h3 class="card-title">🔍 Búsqueda de Anime</h3>
+              <p class="card-description">
+                Busca animes usando la API de Jikan
+              </p>
+            </div>
+
+            <div class="card-content">
+              <form class="search-form" id="animeSearchForm">
+                <div class="form-group">
+                  <label for="animeQuery" class="form-label"
+                    >Buscar Anime</label
+                  >
+                  <input
+                    type="text"
+                    id="animeQuery"
+                    class="form-input"
+                    placeholder="Ej: Naruto, One Piece..."
+                    required
+                  />
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="animeType" class="form-label">Tipo</label>
+                    <select id="animeType" class="form-select">
+                      <option value="">Todos</option>
+                      <option value="tv">TV</option>
+                      <option value="movie">Película</option>
+                      <option value="ova">OVA</option>
+                      <option value="special">Especial</option>
+                      <option value="ona">ONA</option>
+                      <option value="music">Música</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="animeStatus" class="form-label">Estado</label>
+                    <select id="animeStatus" class="form-select">
+                      <option value="">Todos</option>
+                      <option value="airing">En emisión</option>
+                      <option value="complete">Completado</option>
+                      <option value="upcoming">Próximamente</option>
+                    </select>
+                  </div>
+                </div>
+                <button type="submit" class="search-btn" id="searchBtn">
+                  Buscar Anime
+                </button>
+              </form>
+            </div>
+
+            <!-- Resultados de Anime -->
+            <div class="card-results">
+              <div
+                id="animeLoading"
+                class="state-container"
+                style="display: none"
+              >
+                <div class="loading-spinner"></div>
+                <p class="loading-text">Buscando anime...</p>
+              </div>
+
+              <div
+                id="animeError"
+                class="state-container"
+                style="display: none"
+              >
+                <div class="error-icon">⚠️</div>
+                <h3 class="error-title">Error</h3>
+                <p class="error-message" id="animeErrorMessage"></p>
+                <button class="retry-btn" onclick="retryAnimeSearch()">
+                  Reintentar
+                </button>
+              </div>
+
+              <div
+                id="animeEmpty"
+                class="state-container"
+                style="display: none"
+              >
+                <div class="empty-icon">🔍</div>
+                <h3 class="empty-title">No se encontraron resultados</h3>
+                <p class="empty-message">
+                  Intenta con otros términos de búsqueda
+                </p>
+              </div>
+
+              <div id="animeResults" class="results-container">
+                <p class="placeholder-text">
+                  Aquí aparecerán los resultados de anime
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <footer class="footer">
+        <p>Sary Fda Payan Bastidas. ⭐</p>
+      </footer>
+    </div>
+
+    <script src="js/app.js"></script>
+  </body>
+</html>
