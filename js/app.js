@@ -3,6 +3,7 @@ const animeSearchForm = document.getElementById("animeSearchForm");
 const animeQuery = document.getElementById("animeQuery");
 const animeType = document.getElementById("animeType");
 const animeStatus = document.getElementById("animeStatus");
+const animeLimit = document.getElementById("animeLimit");
 const searchBtn = document.getElementById("searchBtn");
 
 // Obtenemos los elementos del DOM para estados de Anime
@@ -166,17 +167,24 @@ function retryAnimeSearch() {
     searchAnime(
       lastSearchParams.query,
       lastSearchParams.type,
-      lastSearchParams.status
+      lastSearchParams.status,
+      lastSearchParams.limit
     );
   }
 }
 
 // API de búsqueda de anime usando Jikan
-async function searchAnime(query = null, type = null, status = null) {
+async function searchAnime(
+  query = null,
+  type = null,
+  status = null,
+  limit = null
+) {
   // Obtenemos los valores de búsqueda del formulario o parámetros
   const searchQuery = query || animeQuery.value.trim();
   const searchType = type || animeType.value;
   const searchStatus = status || animeStatus.value;
+  const searchLimit = limit || animeLimit.value || 20;
 
   // Validamos que se haya ingresado un término de búsqueda
   if (!searchQuery) {
@@ -189,12 +197,14 @@ async function searchAnime(query = null, type = null, status = null) {
     query: searchQuery,
     type: searchType,
     status: searchStatus,
+    limit: searchLimit,
   };
   showAnimeLoading();
 
   try {
     // Construimos la URL de la API con los parámetros
-    let url = `https://api.jikan.moe/v4/anime?q=${searchQuery}&limit=20`;
+    // Limite como query param
+    let url = `https://api.jikan.moe/v4/anime?q=${searchQuery}&limit=${searchLimit}`;
     if (searchType) url += `&type=${searchType}`;
     if (searchStatus) url += `&status=${searchStatus}`;
 
