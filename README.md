@@ -79,3 +79,4 @@ EcosystemsLabs/
 - No se requieren claves de API
 - La aplicación funciona completamente en el frontend
 - Compatible con todos los navegadores modernos
+- Video: https://youtu.be/zxXnRzdE6xE
