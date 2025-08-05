@@ -50,6 +50,19 @@ animeSearchForm.addEventListener("submit", (e) => {
 // Variable global para almacenar parámetros de búsqueda anterior
 let lastSearchParams = {};
 
+// Función para crear una petición con timeout
+function fetchWithTimeout(url, options = {}, timeout = 10000) {
+  return Promise.race([
+    fetch(url, options),
+    new Promise((_, reject) =>
+      setTimeout(
+        () => reject(new Error("Timeout: La petición tardó demasiado")),
+        timeout
+      )
+    ),
+  ]);
+}
+
 // Función para mostrar estado de carga de Anime
 function showAnimeLoading() {
   animeLoading.style.display = "block";
@@ -209,7 +222,7 @@ async function searchAnime(
     if (searchStatus) url += `&status=${searchStatus}`;
 
     // Realizamos la petición a la API
-    const response = await fetch(url);
+    const response = await fetchWithTimeout(url);
     if (!response.ok) throw new Error(`Error HTTP: ${response.status}`);
 
     // Procesamos la respuesta
@@ -302,7 +315,7 @@ async function fetchCatFacts() {
 
   try {
     // Realizamos petición a la API de cat facts
-    const response = await fetch("https://catfact.ninja/fact");
+    const response = await fetchWithTimeout("https://catfact.ninja/fact");
     const data = await response.json();
 
     showCatFactsResults();
@@ -375,7 +388,7 @@ async function fetchRandomUser() {
 
   try {
     // Realizamos petición a la API de usuarios aleatorios
-    const response = await fetch("https://randomuser.me/api/");
+    const response = await fetchWithTimeout("https://randomuser.me/api/");
     const data = await response.json();
 
     showRandomUserResults();
