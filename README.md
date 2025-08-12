@@ -19,7 +19,7 @@ Este repositorio contiene una serie de laboratorios desarrollados para la asigna
 
 - Se simula un servidor con json-server para gestionar publicaciones.  
 - Incluye formulario para crear posts (imagen, título, descripción), - listado de posts con datos desde API y botón para eliminar cada post.  
-- Se implementan operaciones *GET, *POST* y *DELETE*.
+- Se implementan operaciones **GET**, **POST** y **DELETE**.
 
 ---
 
