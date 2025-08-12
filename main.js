@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:3004/ ";
+const API_URL = "http://localhost:3000/posts";
 
 const postForm = document.getElementById("postForm");
 const postsList = document.getElementById("postsList");
@@ -22,7 +22,7 @@ function renderPosts(posts) {
     postsList.innerHTML = "<p>No hay posts aún.</p>";
     return;
   }
- // Return del post like a card
+  // Return del post like a card
   posts.forEach((post) => {
     const postDiv = document.createElement("div");
 
@@ -49,8 +49,7 @@ function renderPosts(posts) {
 
 async function deletePost(id) {
   try {
-    const res = await fetch(`${API_URL}/${id}`, 
-        { method: "DELETE" });
+    const res = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
     if (!res.ok) throw new Error("Error al eliminar post");
     fetchPosts();
   } catch (error) {
