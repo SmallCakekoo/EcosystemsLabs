@@ -1,0 +1,78 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: century Gothic, sans-serif;
+  margin: 20px;
+  max-width: 700px;
+}
+
+h1,
+h2 {
+  text-align: center;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 30px;
+}
+
+input,
+textarea {
+  font-family: century Gothic, sans-serif !important;
+  padding: 8px;
+  font-size: 1em;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+button {
+  padding: 10px;
+  font-size: 1em;
+  cursor: pointer;
+  background-color: #55408b;
+  color: white;
+  border: none;
+  border-radius: 14px;
+  font-family: century Gothic, sans-serif !important;
+  font-weight: bold;
+}
+
+#postsList > div {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 6px;
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+#postsList img {
+  max-width: 120px;
+  max-height: 80px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.post-content {
+  flex-grow: 1;
+}
+
+.post-content h3 {
+  margin: 0 0 8px 0;
+}
+
+.post-content p {
+  margin: 0;
+  color: #333;
+}
+
+button.delete-btn {
+  background-color: #e56990;
+}

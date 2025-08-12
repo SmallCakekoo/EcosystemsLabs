@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Posts App</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <h1>Posts App</h1>
+
+    <section id="form-section">
+      <h2>Agregar nuevo post</h2>
+      <form id="postForm">
+        <input type="text" id="imageUrl" placeholder="URL imagen" required />
+        <input type="text" id="title" placeholder="Título" required />
+        <textarea
+          id="description"
+          placeholder="Descripción"
+          required
+        ></textarea>
+        <button type="submit">Guardar post</button>
+      </form>
+    </section>
+
+    <section id="posts-section">
+      <h2>Lista de posts</h2>
+      <div id="postsList"></div>
+    </section>
+
+    <script src="main.js"></script>
+  </body>
+</html>
