@@ -1,0 +1,224 @@
+### MiniRappi - Backend Testing ###
+
+# Variables del entorno
+@baseUrl = http://localhost:5050
+@contentType = application/json
+
+### 1. Verificar que el servidor esté funcionando ###
+GET {{baseUrl}}/
+Content-Type: {{contentType}}
+
+### 2. Obtener estadísticas iniciales ###
+GET {{baseUrl}}/stats
+Content-Type: {{contentType}}
+
+### 3. LOGIN - Usuario existente (admin) ###
+POST {{baseUrl}}/login
+Content-Type: {{contentType}}
+
+{
+    "username": "admin",
+    "password": "admin123"
+}
+
+### 4. LOGIN - Usuario nuevo (se creará automáticamente) ###
+POST {{baseUrl}}/login
+Content-Type: {{contentType}}
+
+{
+    "username": "usuario1",
+    "password": "password123"
+}
+
+### 5. LOGIN - Password incorrecto (debe fallar) ###
+POST {{baseUrl}}/login
+Content-Type: {{contentType}}
+
+{
+    "username": "admin",
+    "password": "password_incorrecto"
+}
+
+### 6. OBTENER PRODUCTOS ###
+GET {{baseUrl}}/productos
+Content-Type: {{contentType}}
+
+### 7. AGREGAR NUEVO PRODUCTO ###
+POST {{baseUrl}}/productos
+Content-Type: {{contentType}}
+
+{
+    "id": 3,
+    "nombre": "Teclado Mecánico",
+    "precio": 89.99,
+    "tienda": "TechStore"
+}
+
+### 8. AGREGAR OTRO PRODUCTO ###
+POST {{baseUrl}}/productos
+Content-Type: {{contentType}}
+
+{
+    "id": 4,
+    "nombre": "Monitor 4K",
+    "precio": 299.99,
+    "tienda": "DisplayPro"
+}
+
+### 9. VERIFICAR PRODUCTOS AGREGADOS ###
+GET {{baseUrl}}/productos
+Content-Type: {{contentType}}
+
+### 10. OBTENER PEDIDOS ###
+GET {{baseUrl}}/pedidos
+Content-Type: {{contentType}}
+
+### 11. CREAR NUEVO PEDIDO ###
+POST {{baseUrl}}/pedidos
+Content-Type: {{contentType}}
+
+{
+    "id": 2,
+    "producto": "Teclado Mecánico",
+    "cliente": "usuario1"
+}
+
+### 12. CREAR OTRO PEDIDO ###
+POST {{baseUrl}}/pedidos
+Content-Type: {{contentType}}
+
+{
+    "id": 3,
+    "producto": "Monitor 4K",
+    "cliente": "admin"
+}
+
+### 13. VERIFICAR PEDIDOS CREADOS ###
+GET {{baseUrl}}/pedidos
+Content-Type: {{contentType}}
+
+### 14. ACTUALIZAR ESTADO DEL PEDIDO 2 ###
+PUT {{baseUrl}}/pedidos/2
+Content-Type: {{contentType}}
+
+{
+    "estado": "aceptado"
+}
+
+### 15. ACTUALIZAR ESTADO DEL PEDIDO 3 ###
+PUT {{baseUrl}}/pedidos/3
+Content-Type: {{contentType}}
+
+{
+    "estado": "en camino"
+}
+
+### 16. VERIFICAR ESTADOS ACTUALIZADOS ###
+GET {{baseUrl}}/pedidos
+Content-Type: {{contentType}}
+
+### 17. VERIFICAR ESTADÍSTICAS FINALES ###
+GET {{baseUrl}}/stats
+Content-Type: {{contentType}}
+
+### 18. PRUEBA DE ERROR - Producto con ID duplicado ###
+POST {{baseUrl}}/productos
+Content-Type: {{contentType}}
+
+{
+    "id": 1,
+    "nombre": "Producto Duplicado",
+    "precio": 50.00,
+    "tienda": "TestStore"
+}
+
+### 19. PRUEBA DE ERROR - Pedido con ID duplicado ###
+POST {{baseUrl}}/pedidos
+Content-Type: {{contentType}}
+
+{
+    "id": 1,
+    "producto": "Producto Duplicado",
+    "cliente": "test"
+}
+
+### 20. PRUEBA DE ERROR - Ruta no encontrada ###
+GET {{baseUrl}}/ruta-inexistente
+Content-Type: {{contentType}}
+
+### 21. PRUEBA DE ERROR - Login sin campos ###
+POST {{baseUrl}}/login
+Content-Type: {{contentType}}
+
+{
+    "username": ""
+}
+
+### 22. PRUEBA DE ERROR - Producto sin campos ###
+POST {{baseUrl}}/productos
+Content-Type: {{contentType}}
+
+{
+    "id": 5
+}
+
+### 23. PRUEBA DE ERROR - Pedido sin campos ###
+POST {{baseUrl}}/pedidos
+Content-Type: {{contentType}}
+
+{
+    "cliente": "test"
+}
+
+### 24. PRUEBA DE ERROR - Actualizar pedido inexistente ###
+PUT {{baseUrl}}/pedidos/999
+Content-Type: {{contentType}}
+
+{
+    "estado": "cancelado"
+}
+
+### 25. PRUEBA DE ERROR - Actualizar pedido sin estado ###
+PUT {{baseUrl}}/pedidos/1
+Content-Type: {{contentType}}
+
+{
+    "cliente": "nuevo_cliente"
+}
+
+### 26. PRUEBA - Crear producto desde tienda ###
+POST {{baseUrl}}/productos
+Content-Type: {{contentType}}
+
+{
+    "id": 5,
+    "nombre": "Pizza Margherita",
+    "precio": 15.99,
+    "tienda": "PizzaExpress"
+}
+
+### 27. PRUEBA - Crear pedido desde consumidor ###
+POST {{baseUrl}}/pedidos
+Content-Type: {{contentType}}
+
+{
+    "id": 4,
+    "producto": "Pizza Margherita",
+    "cliente": "maria"
+}
+
+### 28. PRUEBA - Actualizar pedido a entregado ###
+PUT {{baseUrl}}/pedidos/4
+Content-Type: {{contentType}}
+
+{
+    "estado": "entregado"
+}
+
+### 29. PRUEBA - Verificar todos los pedidos ###
+GET {{baseUrl}}/pedidos
+Content-Type: {{contentType}}
+
+### 30. PRUEBA - Verificar estadísticas finales ###
+GET {{baseUrl}}/stats
+Content-Type: {{contentType}}

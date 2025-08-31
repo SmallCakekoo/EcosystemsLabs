@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MiniRappi - Ordenar Comida</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=TASA+Explorer:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <!-- Header -->
+      <header class="header">
+        <div class="header-left">
+          <h1>🛒 MiniRappi</h1>
+          <p class="header-subtitle">Ordenar Comida</p>
+        </div>
+        <button id="logoutBtn" class="btn-logout">Cerrar Sesión</button>
+      </header>
+
+      <!-- Login Section -->
+      <div id="loginSection" class="login-section">
+        <div class="login-card">
+          <div class="login-header">
+            <h2>¡Bienvenido a MiniRappi!</h2>
+            <p>Inicia sesión o regístrate para ordenar tu comida favorita</p>
+            <i style="font-size: small">O regresa al <a href="/">menú</a></i>
+          </div>
+
+          <div class="login-tabs">
+            <button class="tab-btn active" data-tab="login">
+              Iniciar Sesión
+            </button>
+            <button class="tab-btn" data-tab="register">Registrarse</button>
+          </div>
+
+          <!-- Login Form -->
+          <form id="loginForm" class="login-form active">
+            <div class="form-group">
+              <label for="loginUsername">Usuario:</label>
+              <input type="text" id="loginUsername" name="username" required />
+            </div>
+            <div class="form-group">
+              <label for="loginPassword">Contraseña:</label>
+              <input
+                type="password"
+                id="loginPassword"
+                name="password"
+                required
+              />
+            </div>
+            <button type="submit" class="btn-login">Entrar</button>
+          </form>
+
+          <!-- Register Form -->
+          <form id="registerForm" class="login-form">
+            <div class="form-group">
+              <label for="registerUsername">Usuario:</label>
+              <input
+                type="text"
+                id="registerUsername"
+                name="username"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="registerPassword">Contraseña:</label>
+              <input
+                type="password"
+                id="registerPassword"
+                name="password"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="registerNombre">Nombre Completo:</label>
+              <input type="text" id="registerNombre" name="nombre" required />
+            </div>
+            <div class="form-group">
+              <label for="registerEmail">Email:</label>
+              <input type="email" id="registerEmail" name="email" required />
+            </div>
+            <div class="form-group">
+              <label for="registerTelefono">Teléfono:</label>
+              <input
+                type="tel"
+                id="registerTelefono"
+                name="telefono"
+                required
+              />
+            </div>
+            <button type="submit" class="btn-login">Registrarse</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Main Content Section -->
+      <div id="mainSection" class="main-section" style="display: none">
+        <!-- User Info Bar -->
+        <div class="user-info-bar">
+          <div class="user-welcome">
+            <h3>¡Hola, <span id="userDisplay"></span>!</h3>
+            <p>¿Qué te gustaría comer hoy?</p>
+          </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="nav-tabs">
+          <button id="storesTab" class="nav-tab active">🏪 Restaurantes</button>
+          <button id="ordersTab" class="nav-tab">📦 Mis Pedidos</button>
+        </div>
+
+        <!-- Stores Section -->
+        <div id="storesSection" class="content-section active">
+          <div class="section-header">
+            <h2>🍕 Restaurantes Disponibles</h2>
+            <button id="refreshStoresBtn" class="btn-secondary">
+              🔄 Actualizar
+            </button>
+          </div>
+          <div id="storesList" class="stores-grid">
+            <!-- Las tiendas se cargarán aquí dinámicamente -->
+          </div>
+        </div>
+
+        <!-- Store Products Section -->
+        <div
+          id="storeProductsSection"
+          class="content-section"
+          style="display: none"
+        >
+          <div class="store-header">
+            <button id="backToStores" class="btn-back">
+              ← Volver a Restaurantes
+            </button>
+            <h2 id="storeName">Productos de la Tienda</h2>
+          </div>
+
+          <div id="storeInfo" class="store-info">
+            <!-- Información de la tienda -->
+          </div>
+
+          <div id="productsList" class="products-grid">
+            <!-- Los productos se cargarán aquí dinámicamente -->
+          </div>
+        </div>
+
+        <!-- My Orders Section -->
+        <div id="myOrdersSection" class="content-section">
+          <div class="section-header">
+            <h2>📦 Mis Pedidos</h2>
+            <button id="refreshOrdersBtn" class="btn-secondary">
+              🔄 Actualizar
+            </button>
+          </div>
+          <div id="myOrdersList" class="orders-grid">
+            <!-- Los pedidos se cargarán aquí dinámicamente -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Loading -->
+      <div id="loading" class="loading" style="display: none">
+        <div class="spinner"></div>
+        <p>Cargando...</p>
+      </div>
+
+      <!-- Error Message -->
+      <div id="errorMessage" class="error-message" style="display: none">
+        <p id="errorText"></p>
+      </div>
+
+      <!-- Success Message -->
+      <div id="successMessage" class="success-message" style="display: none">
+        <p id="successText"></p>
+      </div>
+    </div>
+
+    <script src="index.js"></script>
+  </body>
+</html>
