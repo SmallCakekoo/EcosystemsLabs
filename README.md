@@ -2,6 +2,11 @@
 
 Un sistema completo de delivery construido con Node.js, Express y frontend estático que simula una plataforma de delivery con tres roles: Consumidor, Repartidor y Tienda.
 
+## Video & Diapositivas
+
+- **[Video](https://www.youtube.com/watch?v=GekhC61Nong)**
+- **[Diapos](https://www.figma.com/slides/bFzB69hQeWR3bUKtYPxktR/MiniRappi?node-id=3-21&t=3gKZkSipDLFOXSxi-1)**
+
 ## Características
 
 - ✅ **Backend Express.js** con middleware JSON
