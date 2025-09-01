@@ -1,4 +1,4 @@
-### MiniRappi - Backend Testing ###
+### MiniRappi - Backend Testing - 35 pruebas :> ###
 
 # Variables del entorno
 @baseUrl = http://localhost:5050
@@ -12,213 +12,269 @@ Content-Type: {{contentType}}
 GET {{baseUrl}}/stats
 Content-Type: {{contentType}}
 
-### 3. LOGIN - Usuario existente (admin) ###
-POST {{baseUrl}}/login
+### 3. Obtener todas las tiendas ###
+GET {{baseUrl}}/tiendas
+Content-Type: {{contentType}}
+
+### 4. REGISTRO - Nuevo consumidor ###
+POST {{baseUrl}}/usuarios/registro
 Content-Type: {{contentType}}
 
 {
-    "username": "admin",
-    "password": "admin123"
+    "username": "cliente1",
+    "password": "123456",
+    "nombre": "Juan Pérez",
+    "email": "juan@email.com",
+    "telefono": "3001234567"
 }
 
-### 4. LOGIN - Usuario nuevo (se creará automáticamente) ###
-POST {{baseUrl}}/login
+### 5. LOGIN - Consumidor ###
+POST {{baseUrl}}/usuarios/login
 Content-Type: {{contentType}}
 
 {
-    "username": "usuario1",
-    "password": "password123"
+    "username": "cliente1",
+    "password": "123456"
 }
 
-### 5. LOGIN - Password incorrecto (debe fallar) ###
-POST {{baseUrl}}/login
+### 6. REGISTRO - Nueva tienda ###
+POST {{baseUrl}}/tiendas/registro
 Content-Type: {{contentType}}
 
 {
-    "username": "admin",
-    "password": "password_incorrecto"
+    "username": "pizzeria_roma",
+    "password": "123456",
+    "nombre": "Pizzería Roma",
+    "descripcion": "Las mejores pizzas italianas",
+    "categoria": "Pizza",
+    "direccion": "Calle 123 #45-67",
+    "telefono": "3001234567",
+    "horario": "12:00 PM - 10:00 PM"
 }
 
-### 6. OBTENER PRODUCTOS ###
-GET {{baseUrl}}/productos
-Content-Type: {{contentType}}
-
-### 7. AGREGAR NUEVO PRODUCTO ###
-POST {{baseUrl}}/productos
+### 7. LOGIN - Tienda ###
+POST {{baseUrl}}/tiendas/login
 Content-Type: {{contentType}}
 
 {
-    "id": 3,
-    "nombre": "Teclado Mecánico",
-    "precio": 89.99,
-    "tienda": "TechStore"
+    "username": "pizzeria_roma",
+    "password": "123456"
 }
 
-### 8. AGREGAR OTRO PRODUCTO ###
-POST {{baseUrl}}/productos
+### 8. REGISTRO - Nuevo repartidor ###
+POST {{baseUrl}}/repartidores/registro
 Content-Type: {{contentType}}
 
 {
-    "id": 4,
-    "nombre": "Monitor 4K",
-    "precio": 299.99,
-    "tienda": "DisplayPro"
+    "username": "repartidor1",
+    "password": "123456",
+    "nombre": "Carlos López",
+    "telefono": "3001234567"
 }
 
-### 9. VERIFICAR PRODUCTOS AGREGADOS ###
-GET {{baseUrl}}/productos
+### 9. LOGIN - Repartidor ###
+POST {{baseUrl}}/repartidores/login
 Content-Type: {{contentType}}
 
-### 10. OBTENER PEDIDOS ###
+{
+    "username": "repartidor1",
+    "password": "123456"
+}
+
+### 10. OBTENER PRODUCTOS DE UNA TIENDA ###
+GET {{baseUrl}}/tiendas/1/productos
+Content-Type: {{contentType}}
+
+### 11. CREAR NUEVO PRODUCTO ###
+POST {{baseUrl}}/tiendas/1/productos
+Content-Type: {{contentType}}
+
+{
+    "nombre": "Pizza Margherita",
+    "descripcion": "Pizza tradicional con tomate, mozzarella y albahaca",
+    "precio": 25000,
+    "categoria": "Pizza",
+    "imagen": "https://images.unsplash.com/photo-1604382355076-af4b0eb60143?w=400&h=300&fit=crop",
+    "tiempoPreparacion": "15 min"
+}
+
+### 12. CREAR OTRO PRODUCTO ###
+POST {{baseUrl}}/tiendas/1/productos
+Content-Type: {{contentType}}
+
+{
+    "nombre": "Pizza Pepperoni",
+    "descripcion": "Pizza con pepperoni, queso y salsa de tomate",
+    "precio": 28000,
+    "categoria": "Pizza",
+    "imagen": "https://images.unsplash.com/photo-1628840042765-356cda07504e?w=400&h=300&fit=crop",
+    "tiempoPreparacion": "18 min"
+}
+
+### 13. VERIFICAR PRODUCTOS CREADOS ###
+GET {{baseUrl}}/tiendas/1/productos
+Content-Type: {{contentType}}
+
+### 14. OBTENER TODOS LOS PEDIDOS ###
 GET {{baseUrl}}/pedidos
 Content-Type: {{contentType}}
 
-### 11. CREAR NUEVO PEDIDO ###
+### 15. CREAR NUEVO PEDIDO CON CARRITO ###
 POST {{baseUrl}}/pedidos
 Content-Type: {{contentType}}
 
 {
-    "id": 2,
-    "producto": "Teclado Mecánico",
-    "cliente": "usuario1"
+    "usuarioId": 1,
+    "tiendaId": 1,
+    "productos": [
+        {
+            "productoId": 1,
+            "cantidad": 2
+        }
+    ],
+    "direccionEntrega": "Calle 78 #12-34, Bogotá",
+    "metodoPago": "efectivo"
 }
 
-### 12. CREAR OTRO PEDIDO ###
+### 16. CREAR OTRO PEDIDO ###
 POST {{baseUrl}}/pedidos
 Content-Type: {{contentType}}
 
 {
-    "id": 3,
-    "producto": "Monitor 4K",
-    "cliente": "admin"
+    "usuarioId": 1,
+    "tiendaId": 1,
+    "productos": [
+        {
+            "productoId": 2,
+            "cantidad": 1
+        }
+    ],
+    "direccionEntrega": "Carrera 15 #93-47, Bogotá",
+    "metodoPago": "tarjeta"
 }
 
-### 13. VERIFICAR PEDIDOS CREADOS ###
+### 17. VERIFICAR PEDIDOS CREADOS ###
 GET {{baseUrl}}/pedidos
 Content-Type: {{contentType}}
 
-### 14. ACTUALIZAR ESTADO DEL PEDIDO 2 ###
-PUT {{baseUrl}}/pedidos/2
+### 18. ACTUALIZAR ESTADO DEL PEDIDO (ACEPTAR) ###
+PUT {{baseUrl}}/pedidos/1
 Content-Type: {{contentType}}
 
 {
-    "estado": "aceptado"
+    "estado": "aceptado",
+    "repartidorId": 1
 }
 
-### 15. ACTUALIZAR ESTADO DEL PEDIDO 3 ###
-PUT {{baseUrl}}/pedidos/3
+### 19. CAMBIAR ESTADO DE TIENDA (CERRAR) ###
+PUT {{baseUrl}}/tiendas/1/estado
 Content-Type: {{contentType}}
 
 {
-    "estado": "en camino"
+    "abierta": false
 }
 
-### 16. VERIFICAR ESTADOS ACTUALIZADOS ###
+### 20. VERIFICAR TIENDA CERRADA ###
+GET {{baseUrl}}/tiendas
+Content-Type: {{contentType}}
+
+### 21. INTENTAR CREAR PEDIDO EN TIENDA CERRADA (DEBE FALLAR) ###
+POST {{baseUrl}}/pedidos
+Content-Type: {{contentType}}
+
+{
+    "usuarioId": 1,
+    "tiendaId": 1,
+    "productos": [
+        {
+            "productoId": 1,
+            "cantidad": 1
+        }
+    ],
+    "direccionEntrega": "Calle 123 #45-67",
+    "metodoPago": "efectivo"
+}
+
+### 22. ABRIR TIENDA NUEVAMENTE ###
+PUT {{baseUrl}}/tiendas/1/estado
+Content-Type: {{contentType}}
+
+{
+    "abierta": true
+}
+
+### 23. VERIFICAR ESTADOS ACTUALIZADOS ###
 GET {{baseUrl}}/pedidos
 Content-Type: {{contentType}}
 
-### 17. VERIFICAR ESTADÍSTICAS FINALES ###
+### 24. VERIFICAR ESTADÍSTICAS FINALES ###
 GET {{baseUrl}}/stats
 Content-Type: {{contentType}}
 
-### 18. PRUEBA DE ERROR - Producto con ID duplicado ###
-POST {{baseUrl}}/productos
-Content-Type: {{contentType}}
-
-{
-    "id": 1,
-    "nombre": "Producto Duplicado",
-    "precio": 50.00,
-    "tienda": "TestStore"
-}
-
-### 19. PRUEBA DE ERROR - Pedido con ID duplicado ###
-POST {{baseUrl}}/pedidos
-Content-Type: {{contentType}}
-
-{
-    "id": 1,
-    "producto": "Producto Duplicado",
-    "cliente": "test"
-}
-
-### 20. PRUEBA DE ERROR - Ruta no encontrada ###
+### 25. PRUEBA DE ERROR - Ruta no encontrada ###
 GET {{baseUrl}}/ruta-inexistente
 Content-Type: {{contentType}}
 
-### 21. PRUEBA DE ERROR - Login sin campos ###
-POST {{baseUrl}}/login
+### 26. PRUEBA DE ERROR - Login sin campos ###
+POST {{baseUrl}}/usuarios/login
 Content-Type: {{contentType}}
 
 {
     "username": ""
 }
 
-### 22. PRUEBA DE ERROR - Producto sin campos ###
-POST {{baseUrl}}/productos
+### 27. PRUEBA DE ERROR - Producto sin campos obligatorios ###
+POST {{baseUrl}}/tiendas/1/productos
 Content-Type: {{contentType}}
 
 {
-    "id": 5
+    "nombre": "Producto sin precio"
 }
 
-### 23. PRUEBA DE ERROR - Pedido sin campos ###
+### 28. PRUEBA DE ERROR - Pedido sin campos obligatorios ###
 POST {{baseUrl}}/pedidos
 Content-Type: {{contentType}}
 
 {
-    "cliente": "test"
+    "usuarioId": 1
 }
 
-### 24. PRUEBA DE ERROR - Actualizar pedido inexistente ###
+### 29. PRUEBA DE ERROR - Actualizar pedido inexistente ###
 PUT {{baseUrl}}/pedidos/999
 Content-Type: {{contentType}}
 
 {
-    "estado": "cancelado"
+    "estado": "aceptado"
 }
 
-### 25. PRUEBA DE ERROR - Actualizar pedido sin estado ###
-PUT {{baseUrl}}/pedidos/1
+### 30. PRUEBA DE ERROR - Cambiar estado de tienda inexistente ###
+PUT {{baseUrl}}/tiendas/999/estado
 Content-Type: {{contentType}}
 
 {
-    "cliente": "nuevo_cliente"
+    "abierta": false
 }
 
-### 26. PRUEBA - Crear producto desde tienda ###
-POST {{baseUrl}}/productos
+### 31. PRUEBA DE ERROR - Estado de tienda inválido ###
+PUT {{baseUrl}}/tiendas/1/estado
 Content-Type: {{contentType}}
 
 {
-    "id": 5,
-    "nombre": "Pizza Margherita",
-    "precio": 15.99,
-    "tienda": "PizzaExpress"
+    "abierta": "no_es_booleano"
 }
 
-### 27. PRUEBA - Crear pedido desde consumidor ###
-POST {{baseUrl}}/pedidos
+### 32. PRUEBA - Obtener pedidos con filtros ###
+GET {{baseUrl}}/pedidos?estado=pendiente
 Content-Type: {{contentType}}
 
-{
-    "id": 4,
-    "producto": "Pizza Margherita",
-    "cliente": "maria"
-}
-
-### 28. PRUEBA - Actualizar pedido a entregado ###
-PUT {{baseUrl}}/pedidos/4
+### 33. PRUEBA - Obtener pedidos por usuario ###
+GET {{baseUrl}}/pedidos?usuarioId=1
 Content-Type: {{contentType}}
 
-{
-    "estado": "entregado"
-}
-
-### 29. PRUEBA - Verificar todos los pedidos ###
-GET {{baseUrl}}/pedidos
+### 34. PRUEBA - Obtener pedidos por tienda ###
+GET {{baseUrl}}/pedidos?tiendaId=1
 Content-Type: {{contentType}}
 
-### 30. PRUEBA - Verificar estadísticas finales ###
+### 35. PRUEBA FINAL - Verificar estadísticas completas ###
 GET {{baseUrl}}/stats
 Content-Type: {{contentType}}

@@ -292,6 +292,32 @@ function createOrderCard(order) {
                 }</div>
             </div>
             
+            <div class="order-customer">
+                <h4>Cliente</h4>
+                <div class="customer-info">
+                    <div class="customer-name">
+                        <i class="ri-user-line"></i>
+                        ${
+                          order.nombreCliente ||
+                          order.usuario?.nombre ||
+                          "Cliente"
+                        }
+                    </div>
+                    <div class="customer-phone">
+                        <i class="ri-phone-line"></i>
+                        ${
+                          order.telefonoCliente ||
+                          order.usuario?.telefono ||
+                          "Sin teléfono"
+                        }
+                    </div>
+                    <div class="customer-address">
+                        <i class="ri-map-pin-line"></i>
+                        ${order.direccionEntrega || "Sin dirección"}
+                    </div>
+                </div>
+            </div>
+            
             <div class="order-products">
                 <h4>Productos</h4>
                 ${order.productos

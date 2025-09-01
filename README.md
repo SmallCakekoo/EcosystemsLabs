@@ -13,6 +13,9 @@ Un sistema completo de delivery construido con Node.js, Express y frontend está
 - ✅ **Tres aplicaciones frontend** con roles específicos
 - ✅ **Sistema de autenticación** automático
 - ✅ **Gestión de productos** y pedidos
+- ✅ **Carrito de compras** con funcionalidad completa
+- ✅ **Control de estado de tiendas** (abierta/cerrada)
+- ✅ **Información del cliente** en pedidos para repartidores
 - ✅ **Interfaces modernas** y responsivas
 - ✅ **Arrays en memoria** para desarrollo y testing
 - ✅ **Puerto 5050**
@@ -76,13 +79,16 @@ node index.js
 
 - **Login/Registro** automático
 - **Ver productos** disponibles
-- **Crear pedidos** con un clic
+- **Carrito de compras** con agregar/eliminar productos
+- **Formulario de compra** con método de pago y dirección
+- **Indicador de tiendas cerradas** (no se puede acceder)
 - **Interfaz intuitiva** para compras
 
 ### 🚚 **Repartidor (App2)**
 
 - **Login** para acceder al sistema
 - **Ver pedidos pendientes** y en curso
+- **Información completa del cliente** (nombre, teléfono, dirección)
 - **Aceptar pedidos** y cambiar estados
 - **Filtros** por estado de pedido
 
@@ -91,6 +97,7 @@ node index.js
 - **Login** para gestión de productos
 - **Crear nuevos productos** (nombre, precio, tienda)
 - **Ver productos** existentes
+- **Control de estado** (abrir/cerrar tienda)
 - **Contador** de productos totales
 
 ## API Endpoints
@@ -102,17 +109,22 @@ node index.js
 - **POST** `/tiendas/login` - Login de tienda
 - **POST** `/tiendas/registro` - Registro de tienda
 - **POST** `/repartidores/login` - Login de repartidor
+- **POST** `/repartidores/registro` - Registro de repartidor
+
+### Tiendas
+
+- **GET** `/tiendas` - Obtener todas las tiendas
+- **PUT** `/tiendas/:id/estado` - Cambiar estado de tienda (abierta/cerrada)
 
 ### Productos
 
-- **GET** `/tiendas` - Obtener todas las tiendas
 - **GET** `/tiendas/:id/productos` - Obtener productos de una tienda
 - **POST** `/tiendas/:id/productos` - Crear nuevo producto
 
 ### Pedidos
 
-- **GET** `/pedidos` - Obtener todos los pedidos
-- **POST** `/pedidos` - Crear nuevo pedido
+- **GET** `/pedidos` - Obtener todos los pedidos (con filtros opcionales)
+- **POST** `/pedidos` - Crear nuevo pedido con carrito y datos de cliente
 - **PUT** `/pedidos/:id` - Actualizar estado del pedido
 
 ### Utilidades
@@ -145,19 +157,44 @@ El sistema maneja un flujo completo de estados:
 ### 2. **Consumidor hace pedidos**
 
 - Login en `/app1`
-- Ver productos disponibles
-- Crear pedidos con un clic
+- Ver productos disponibles (tiendas cerradas aparecen marcadas)
+- Agregar productos al carrito
+- Confirmar compra con método de pago y dirección
 
 ### 3. **Repartidor gestiona pedidos**
 
 - Login en `/app2`
-- Ver pedidos pendientes
+- Ver pedidos pendientes con información completa del cliente
 - Aceptar y cambiar estados
 
 ### 4. **Seguimiento completo**
 
 - Todos los cambios se reflejan en tiempo real
 - Estados visibles en todas las aplicaciones
+
+## Funcionalidades Avanzadas
+
+### 🛒 **Carrito de Compras**
+
+- **Agregar productos** al carrito desde la vista de productos
+- **Eliminar productos** del carrito individualmente
+- **Cálculo automático** del total
+- **Formulario de compra** con método de pago y dirección
+- **Limpieza automática** del carrito al cambiar de tienda
+
+### 🏪 **Control de Estado de Tiendas**
+
+- **Toggle visual** para abrir/cerrar tienda
+- **Indicador "Cerrado"** en tiendas no disponibles
+- **Bloqueo de acceso** a tiendas cerradas
+- **Validación en backend** para pedidos en tiendas cerradas
+
+### 🚚 **Información del Cliente**
+
+- **Datos completos** del cliente en cada pedido
+- **Nombre, teléfono y dirección** visibles para repartidores
+- **Información persistente** en la base de datos
+- **Iconos visuales** para mejor identificación
 
 ## Características de UI/UX
 

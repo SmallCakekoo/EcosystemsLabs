@@ -43,6 +43,7 @@ tiendas.push({
   horario: "12:00 PM - 10:00 PM",
   rating: 4.5,
   tiempoEntrega: "30-45 min",
+  abierta: true, // Estado de la tienda
 });
 
 repartidores.push({
@@ -220,6 +221,7 @@ app.post("/tiendas/registro", (req, res) => {
     horario: horario || "Horario no especificado",
     rating: 0,
     tiempoEntrega: "30-45 min",
+    abierta: true, // Por defecto las tiendas se crean abiertas
   };
 
   tiendas.push(newStore);
@@ -270,6 +272,7 @@ app.get("/tiendas", (req, res) => {
     rating: tienda.rating,
     tiempoEntrega: tienda.tiempoEntrega,
     horario: tienda.horario,
+    abierta: tienda.abierta, // Incluir estado de la tienda
   }));
 
   res.status(200).json({
@@ -470,6 +473,7 @@ app.post("/pedidos", (req, res) => {
     tiendaId,
     productos: productosRequest,
     direccionEntrega,
+    metodoPago,
   } = req.body;
 
   if (!usuarioId || !tiendaId || !productosRequest || !direccionEntrega) {
@@ -491,6 +495,13 @@ app.post("/pedidos", (req, res) => {
   if (!tienda) {
     return res.status(404).json({
       error: "Tienda no encontrada",
+    });
+  }
+
+  // Verificar que la tienda esté abierta
+  if (!tienda.abierta) {
+    return res.status(400).json({
+      error: "La tienda está cerrada. No se pueden realizar pedidos.",
     });
   }
 
@@ -529,6 +540,9 @@ app.post("/pedidos", (req, res) => {
     total,
     estado: "pendiente",
     direccionEntrega,
+    metodoPago: metodoPago || "No especificado",
+    nombreCliente: usuario.nombre,
+    telefonoCliente: usuario.telefono,
     fechaCreacion: new Date(),
     tiempoEstimado: tienda.tiempoEntrega,
   };
@@ -597,6 +611,38 @@ app.get("/pedidos", (req, res) => {
   res.status(200).json({
     message: "Pedidos obtenidos correctamente",
     pedidos: pedidosEnriquecidos,
+  });
+});
+
+// PUT /tiendas/:id/estado - Cambiar estado de la tienda (abierta/cerrada)
+app.put("/tiendas/:id/estado", (req, res) => {
+  const tiendaId = parseInt(req.params.id);
+  const { abierta } = req.body;
+
+  if (typeof abierta !== "boolean") {
+    return res.status(400).json({
+      error: "El campo 'abierta' debe ser un booleano",
+    });
+  }
+
+  const tiendaIndex = tiendas.findIndex((t) => t.id === tiendaId);
+
+  if (tiendaIndex === -1) {
+    return res.status(404).json({
+      error: "Tienda no encontrada",
+    });
+  }
+
+  // Actualizar estado de la tienda
+  tiendas[tiendaIndex].abierta = abierta;
+
+  res.status(200).json({
+    message: `Tienda ${abierta ? "abierta" : "cerrada"} correctamente`,
+    tienda: {
+      id: tiendas[tiendaIndex].id,
+      nombre: tiendas[tiendaIndex].nombre,
+      abierta: tiendas[tiendaIndex].abierta,
+    },
   });
 });
 

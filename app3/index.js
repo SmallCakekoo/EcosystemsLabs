@@ -30,6 +30,7 @@ const ordersTab = document.getElementById("ordersTab");
 const addProductBtn = document.getElementById("addProductBtn");
 const cancelProductBtn = document.getElementById("cancelProductBtn");
 const refreshOrdersBtn = document.getElementById("refreshOrdersBtn");
+const storeStatusToggle = document.getElementById("storeStatusToggle");
 
 // Contenedores
 const productsSection = document.getElementById("productsSection");
@@ -74,6 +75,11 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   // Pedidos
   refreshOrdersBtn.addEventListener("click", loadOrders);
+
+  // Estado de la tienda
+  if (storeStatusToggle) {
+    storeStatusToggle.addEventListener("change", handleStoreStatusChange);
+  }
 
   // Verificar si ya hay un usuario logueado
   await checkAuthStatus();
@@ -226,6 +232,9 @@ async function showMainSection() {
 
   // Actualizar nombre de la tienda
   storeName.textContent = currentUser.nombre;
+
+  // Configurar estado de la tienda
+  await loadStoreStatus();
 
   // Cargar datos
   loadProducts();
@@ -554,6 +563,69 @@ async function updateStats() {
   }, 0);
 
   totalRevenue.textContent = `$${revenue}`;
+}
+
+// Funciones para manejar el estado de la tienda
+async function loadStoreStatus() {
+  try {
+    // Obtener información actualizada de la tienda
+    const response = await fetch(`/tiendas`);
+    const data = await response.json();
+
+    if (response.ok) {
+      const currentStore = data.tiendas.find((t) => t.id === currentUser.id);
+      if (currentStore) {
+        // Actualizar el toggle
+        storeStatusToggle.checked = currentStore.abierta;
+        updateStoreStatusLabel(currentStore.abierta);
+      }
+    }
+  } catch (error) {
+    console.error("Error al cargar el estado de la tienda:", error);
+  }
+}
+
+async function handleStoreStatusChange() {
+  const isOpen = storeStatusToggle.checked;
+
+  try {
+    const response = await fetch(`/tiendas/${currentUser.id}/estado`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ abierta: isOpen }),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      showMessage(
+        `Tienda ${isOpen ? "abierta" : "cerrada"} correctamente`,
+        "success"
+      );
+      updateStoreStatusLabel(isOpen);
+    } else {
+      // Revertir el toggle si hay error
+      storeStatusToggle.checked = !isOpen;
+      showMessage(
+        data.error || "Error al cambiar el estado de la tienda",
+        "error"
+      );
+    }
+  } catch (error) {
+    // Revertir el toggle si hay error
+    storeStatusToggle.checked = !isOpen;
+    showMessage("Error de conexión", "error");
+    console.error("Error:", error);
+  }
+}
+
+function updateStoreStatusLabel(isOpen) {
+  const toggleLabel = document.querySelector(".toggle-label");
+  if (toggleLabel) {
+    toggleLabel.textContent = isOpen ? "Tienda Abierta" : "Tienda Cerrada";
+  }
 }
 
 // Mostrar mensajes

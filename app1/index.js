@@ -5,6 +5,8 @@ let currentStore = null;
 let tiendas = []; // Global tiendas array
 let myOrders = []; // Mis pedidos
 let ordersPollingInterval = null; // Para el polling de pedidos
+let carrito = []; // Carrito de compras
+let carritoTotal = 0; // Total del carrito
 
 // Elementos del DOM
 const loginSection = document.getElementById("loginSection");
@@ -201,6 +203,8 @@ function handleLogout() {
   currentView = "stores";
   currentStore = null;
   myOrders = [];
+  carrito = [];
+  carritoTotal = 0;
   localStorage.removeItem("currentUser");
 
   // Detener polling de pedidos
@@ -293,6 +297,11 @@ async function showStoreProducts(tiendaId) {
   myOrdersSection.classList.remove("active");
   storeProductsSection.style.display = "block";
 
+  // Limpiar carrito al cambiar de tienda
+  carrito = [];
+  carritoTotal = 0;
+  updateCarritoDisplay();
+
   try {
     const response = await fetch(`/tiendas/${tiendaId}/productos`);
     const data = await response.json();
@@ -362,8 +371,12 @@ function displayStores(tiendas) {
 
   tiendas.forEach((tienda) => {
     const storeCard = document.createElement("div");
-    storeCard.className = "store-card";
-    storeCard.onclick = () => showStoreProducts(tienda.id);
+    storeCard.className = `store-card ${!tienda.abierta ? "store-closed" : ""}`;
+
+    // Solo permitir clic si la tienda está abierta
+    if (tienda.abierta) {
+      storeCard.onclick = () => showStoreProducts(tienda.id);
+    }
 
     storeCard.innerHTML = `
       <div class="store-header">
@@ -383,6 +396,11 @@ function displayStores(tiendas) {
         </div>
         <div class="store-delivery">${tienda.tiempoEntrega || "30-45 min"}</div>
       </div>
+      ${
+        !tienda.abierta
+          ? '<div class="store-status-closed">🔒 Cerrado</div>'
+          : ""
+      }
     `;
 
     storesGrid.appendChild(storeCard);
@@ -424,10 +442,10 @@ function displayStoreProducts(productos) {
         }</div>
         <div class="product-footer">
           <div class="product-price">$${producto.precio}</div>
-          <button class="btn-add-to-cart" onclick="createOrderImmediately(${JSON.stringify(
+          <button class="btn-add-to-cart" onclick="addToCart(${JSON.stringify(
             producto
           ).replace(/"/g, "&quot;")})">
-            Agregar
+            Agregar al Carrito
           </button>
         </div>
       </div>
@@ -689,5 +707,193 @@ function showMessage(message, type = "info") {
   }
 }
 
+// Funciones del carrito
+function addToCart(producto) {
+  // Buscar si el producto ya está en el carrito
+  const existingItem = carrito.find((item) => item.id === producto.id);
+
+  if (existingItem) {
+    existingItem.cantidad += 1;
+  } else {
+    carrito.push({
+      ...producto,
+      cantidad: 1,
+    });
+  }
+
+  // Actualizar total
+  carritoTotal = carrito.reduce(
+    (sum, item) => sum + item.precio * item.cantidad,
+    0
+  );
+
+  // Actualizar display del carrito
+  updateCarritoDisplay();
+
+  showMessage(`${producto.nombre} agregado al carrito`, "success");
+}
+
+function removeFromCart(productoId) {
+  carrito = carrito.filter((item) => item.id !== productoId);
+  carritoTotal = carrito.reduce(
+    (sum, item) => sum + item.precio * item.cantidad,
+    0
+  );
+  updateCarritoDisplay();
+}
+
+function updateCarritoDisplay() {
+  const carritoContainer = document.getElementById("carritoContainer");
+  if (!carritoContainer) return;
+
+  if (carrito.length === 0) {
+    carritoContainer.innerHTML = `
+      <div class="carrito-vacio">
+        <p>Tu carrito está vacío</p>
+        <p>Agrega productos para continuar</p>
+      </div>
+    `;
+    return;
+  }
+
+  carritoContainer.innerHTML = `
+    <div class="carrito-items">
+      ${carrito
+        .map(
+          (item) => `
+        <div class="carrito-item">
+          <div class="carrito-item-info">
+            <span class="carrito-item-nombre">${item.nombre}</span>
+            <span class="carrito-item-precio">$${item.precio} x ${item.cantidad}</span>
+          </div>
+          <button class="btn-remove-from-cart" onclick="removeFromCart(${item.id})">
+            <i class="ri-delete-bin-line"></i>
+          </button>
+        </div>
+      `
+        )
+        .join("")}
+    </div>
+    <div class="carrito-total">
+      <strong>Total: $${carritoTotal}</strong>
+    </div>
+    <button class="btn-confirmar-compra" onclick="mostrarFormularioCompra()">
+      Confirmar Compra
+    </button>
+  `;
+}
+
+function mostrarFormularioCompra() {
+  if (carrito.length === 0) {
+    showMessage("Tu carrito está vacío", "error");
+    return;
+  }
+
+  // Crear modal del formulario
+  const modal = document.createElement("div");
+  modal.className = "modal-overlay";
+  modal.innerHTML = `
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Confirmar Compra</h3>
+        <button class="btn-close" onclick="this.closest('.modal-overlay').remove()">
+          <i class="ri-close-line"></i>
+        </button>
+      </div>
+      <form id="formularioCompra" class="formulario-compra">
+        <div class="form-group">
+          <label for="metodoPago">Método de Pago:</label>
+          <select id="metodoPago" required>
+            <option value="">Selecciona método de pago</option>
+            <option value="efectivo">Efectivo</option>
+            <option value="tarjeta">Tarjeta de Crédito/Débito</option>
+            <option value="transferencia">Transferencia Bancaria</option>
+            <option value="digital">Pago Digital</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="direccionEntrega">Dirección de Entrega:</label>
+          <input type="text" id="direccionEntrega" required 
+                 placeholder="Calle 123 #45-67, Ciudad" />
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn-primary">Confirmar Pedido</button>
+          <button type="button" class="btn-secondary" 
+                  onclick="this.closest('.modal-overlay').remove()">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+
+  // Event listener para el formulario
+  document
+    .getElementById("formularioCompra")
+    .addEventListener("submit", async (e) => {
+      e.preventDefault();
+      await confirmarCompra();
+    });
+}
+
+async function confirmarCompra() {
+  const metodoPago = document.getElementById("metodoPago").value;
+  const direccionEntrega = document.getElementById("direccionEntrega").value;
+
+  if (!metodoPago || !direccionEntrega) {
+    showMessage("Por favor completa todos los campos", "error");
+    return;
+  }
+
+  try {
+    showMessage("Procesando tu pedido...", "info");
+
+    const productos = carrito.map((item) => ({
+      productoId: item.id,
+      cantidad: item.cantidad,
+    }));
+
+    const response = await fetch("/pedidos", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        usuarioId: currentUser.id,
+        tiendaId: currentStore.id,
+        productos: productos,
+        direccionEntrega: direccionEntrega,
+        metodoPago: metodoPago,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      showMessage("¡Pedido confirmado con éxito! Estado: Pendiente", "success");
+
+      // Limpiar carrito
+      carrito = [];
+      carritoTotal = 0;
+      updateCarritoDisplay();
+
+      // Cerrar modal
+      document.querySelector(".modal-overlay").remove();
+
+      // Recargar pedidos y cambiar a vista de pedidos
+      loadMyOrders();
+      switchView("orders");
+    } else {
+      showMessage(data.error || "Error al confirmar el pedido", "error");
+    }
+  } catch (error) {
+    showMessage("Error de conexión", "error");
+    console.error("Error:", error);
+  }
+}
+
 // Funciones globales para onclick en HTML
-window.createOrderImmediately = createOrderImmediately;
+window.addToCart = addToCart;
+window.removeFromCart = removeFromCart;
+window.mostrarFormularioCompra = mostrarFormularioCompra;
+window.confirmarCompra = confirmarCompra;
