@@ -357,7 +357,7 @@ function displayProducts() {
   if (products.length === 0) {
     productsGrid.innerHTML = `
             <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--rappi-gray-dark);">
-                <div style="font-size: 3rem; margin-bottom: 20px;">🍽️</div>
+                <div style="font-size: 3rem; margin-bottom: 20px;"><i class="ri-restaurant-line"></i></div>
                 <h3>No hay productos aún</h3>
                 <p>Comienza agregando tu primer producto</p>
             </div>
@@ -397,10 +397,10 @@ function createProductCard(producto) {
             <div class="product-actions">
                 <button class="btn-edit" onclick="editProduct(${
                   producto.id
-                })">✏️ Editar</button>
+                })"><i class="ri-edit-line"></i> Editar</button>
                 <button class="btn-delete" onclick="deleteProduct(${
                   producto.id
-                })">🗑️ Eliminar</button>
+                })"><i class="ri-delete-bin-line"></i> Eliminar</button>
             </div>
         </div>
     `;
@@ -445,7 +445,7 @@ function displayOrders() {
   if (orders.length === 0) {
     ordersGrid.innerHTML = `
             <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--rappi-gray-dark);">
-                <div style="font-size: 3rem; margin-bottom: 20px;">📦</div>
+                <div style="font-size: 3rem; margin-bottom: 20px;"><i class="ri-shopping-bag-line"></i></div>
                 <h3>No hay pedidos aún</h3>
                 <p>Los pedidos aparecerán aquí cuando los clientes ordenen</p>
             </div>
@@ -484,7 +484,7 @@ function createOrderCard(pedido) {
         
         <div class="order-details">
             <div class="order-customer">
-                <div class="customer-icon">👤</div>
+                <div class="customer-icon"><i class="ri-user-line"></i></div>
                 <div class="customer-name">${
                   pedido.usuario?.username || "Cliente"
                 }</div>
