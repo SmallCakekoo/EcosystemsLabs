@@ -1,26 +1,67 @@
-# 🌱 Laboratorios de Ecosistema de Aplicaciones
+# WebSockets y Socket.IO - Preguntas Resueltas
 
-Este repositorio contiene una serie de laboratorios desarrollados para la asignatura de Ecosistema de Aplicaciones. Cada rama del repositorio corresponde a un laboratorio diferente.
+## 1. ¿Cómo contar el número de clientes conectados y notificarle a todos el número de clientes conectados a todos?
+
+```js
+const io = require("socket.io")(3000);
+
+let connectedClients = 0;
+
+io.on("connection", (socket) => {
+  connectedClients++;
+
+  // Notificar a todos el número de clientes conectados
+  io.emit("clientsCount", connectedClients);
+
+  socket.on("disconnect", () => {
+    connectedClients--;
+    io.emit("clientsCount", connectedClients);
+  });
+});
+```
 
 ---
 
-# 🌱 Laboratorio 1 - Ecosistema de Aplicaciones
+## 2. ¿Cómo identificar a cada cliente que se une con un id único?
 
-**Rama:** `Laboratorio1`
+```js
+io.on("connection", (socket) => {
+  console.log("Cliente conectado con id:", socket.id);
 
-- Se consumen 3 APIs públicas mediante botones, cada botón hace `fetch`.
-- Incluye buscador de animes con límite, nombre y tipo.
-
----
-
-# 🌱 Laboratorio 2 - Posts CRUD App  
-
-**Rama:** `Laboratorio2`
-
-- Se simula un servidor con json-server para gestionar publicaciones.  
-- Incluye formulario para crear posts (imagen, título, descripción), - listado de posts con datos desde API y botón para eliminar cada post.  
-- Se implementan operaciones **GET**, **POST** y **DELETE**.
+  // Enviar el id al cliente mismo
+  socket.emit("yourId", socket.id);
+});
+```
 
 ---
 
-🚧 Proyecto en desarrollo.
+## 3. ¿Cómo emitir eventos para un sólo cliente de todos los conectados?
+
+```js
+// Emitir a un cliente en específico
+io.to(socket.id).emit("privateMessage", "Este mensaje es solo para ti");
+
+// Si tienes el id de otro cliente
+io.to("otroSocketId").emit("privateMessage", "Hola!");
+```
+
+---
+
+## 4. ¿Cómo identificar cuando un usuario se desconectó?
+
+```js
+io.on("connection", (socket) => {
+  socket.on("disconnect", () => {
+    console.log(`Cliente ${socket.id} se desconectó`);
+  });
+});
+```
+
+---
+
+## Resumencito:
+
+- `io.emit(...)` → mensaje a **todos**.
+- `socket.emit(...)` → mensaje **solo al cliente actual**.
+- `io.to(id).emit(...)` → mensaje a **un cliente específico**.
+- Eventos `connection` y `disconnect` sirven para manejar la entrada/salida.

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.jpeg" />
+    <title>Piedra Papel Tijera - Inicio</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        font-family: century gothic, system-ui, sans-serif;
+        margin: 0;
+        background: #f7f7fb;
+        color: #111827;
+      }
+      .container {
+        max-width: 720px;
+        margin: 40px auto;
+        padding: 0 16px;
+      }
+      .card {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 16px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+      @media (min-width: 640px) {
+        .grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+      a {
+        display: inline-block;
+        background: #2563eb;
+        color: #fff;
+        text-decoration: none;
+        padding: 12px 16px;
+        border-radius: 10px;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="container">
+      <h1>Piedra, Papel o Tijera</h1>
+      <div class="grid">
+        <section class="card">
+          <h2>Jugador</h2>
+          <p>Entra y juega en tiempo real.</p>
+          <a href="/app1/">Entrar como Jugador</a>
+        </section>
+        <section class="card">
+          <h2>Monitor</h2>
+          <p>Observa resultados de todas las rondas.</p>
+          <a href="/app2/">Abrir Monitor</a>
+        </section>
+      </div>
+    </main>
+  </body>
+</html>

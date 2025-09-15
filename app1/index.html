@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Jugador - Piedra Papel Tijera</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.jpeg" />
+  </head>
+
+  <body>
+    <main class="container">
+      <h1>Piedra, Papel o Tijera</h1>
+
+      <section id="name-section" class="card">
+        <label for="player-name">Tu nombre</label>
+        <input id="player-name" type="text" placeholder="Ingresa tu nombre" />
+        <button id="join-btn">Entrar como jugador</button>
+        <p id="status" class="muted"></p>
+      </section>
+
+      <section id="game-section" class="card" style="display: none">
+        <h2 id="versus">Esperando oponente...</h2>
+        <div class="choices">
+          <button class="choice" data-choice="rock" disabled>🪨 Piedra</button>
+          <button class="choice" data-choice="paper" disabled>📄 Papel</button>
+          <button class="choice" data-choice="scissors" disabled>
+            ✂️ Tijera
+          </button>
+        </div>
+        <div id="result" class="result"></div>
+        <div class="scoreboard">
+          <span id="wins">0</span> victorias ·
+          <span id="losses">0</span> derrotas ·
+          <span id="draws">0</span> empates
+        </div>
+      </section>
+    </main>
+
+    <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+    <script src="index.js"></script>
+  </body>
+</html>

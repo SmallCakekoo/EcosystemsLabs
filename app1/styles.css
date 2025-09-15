@@ -1,0 +1,87 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: century gothic, system-ui, sans-serif;
+    margin: 0;
+    background: #f7f7fb;
+    color: #111827;
+}
+
+.container {
+    max-width: 720px;
+    margin: 40px auto;
+    padding: 0 16px;
+}
+
+h1 {
+    margin: 0 0 16px;
+    font-size: 28px;
+}
+
+.card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+}
+
+input {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    background: #ffffff;
+    color: #111827;
+}
+
+button {
+    background: #2563eb;
+    color: #ffffff;
+    border: none;
+    padding: 10px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+button[disabled] {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+.muted {
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.choices {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.choice {
+    flex: 1;
+}
+
+.result {
+    margin-top: 12px;
+    font-size: 18px;
+}
+
+.scoreboard {
+    margin-top: 8px;
+    color: #6b7280;
+}
+
+#join-btn {
+    margin-top: 12px;
+    font-family: century gothic, system-ui, sans-serif;
+}

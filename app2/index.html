@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Monitor - Piedra Papel Tijera</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.jpeg" />
+  </head>
+
+  <body>
+    <main class="container">
+      <h1>Monitor de partidas</h1>
+      <section class="card">
+        <p id="players" class="muted">Jugadores conectados: 0</p>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Jugador 1</th>
+              <th>Jugador 2</th>
+              <th>Ganador</th>
+            </tr>
+          </thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </section>
+      <section class="card">
+        <h3>Eventos</h3>
+        <ul id="events" class="events"></ul>
+      </section>
+    </main>
+
+    <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+    <script src="index.js"></script>
+  </body>
+</html>
