@@ -1,36 +1,38 @@
+// Dependencias del servidor
 const express = require("express");
 const path = require("path");
 const { Server } = require("socket.io");
 const { createServer } = require("http");
 
 const app = express();
-
 const httpServer = createServer(app);
 
+// Configuración Socket.IO
 const io = new Server(httpServer, {
   path: "/real-time",
-  cors: {
-    origin: "*",
-  },
+  cors: { origin: "*" },
 });
 
+// Middleware y archivos estáticos
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/app1", express.static(path.join(__dirname, "app1")));
 app.use("/app2", express.static(path.join(__dirname, "app2")));
 
-// Simple in-memory game state for a single match of two players
+// Estado del juego en memoria
 const matchState = {
-  playersBySocketId: {}, // socketId -> { name, choice, wins, losses }
-  playerOrder: [], // maintain first two players order
+  playersBySocketId: {},
+  playerOrder: [],
 };
 
+// Resetea elecciones de jugadores
 function resetChoices() {
   Object.values(matchState.playersBySocketId).forEach((p) => {
     p.choice = null;
   });
 }
 
+// Normaliza elección del jugador
 function normalizeChoice(choice) {
   if (!choice) return null;
   const c = String(choice).toLowerCase().trim();
@@ -40,12 +42,14 @@ function normalizeChoice(choice) {
   return null;
 }
 
+// Determina ganador de la ronda
 function determineWinner(choicePlayer1, choicePlayer2) {
-  if (choicePlayer1 === choicePlayer2) return "draw";
+  if (choicePlayer1 === choicePlayer2) return "draw"; // 'draw' es empate
   const rules = { piedra: "tijera", tijera: "papel", papel: "piedra" };
   return rules[choicePlayer1] === choicePlayer2 ? "player1" : "player2";
 }
 
+// Calcula resultado completo de la ronda
 function computeRoundResult() {
   const players = matchState.playerOrder
     .map((sid) => ({ sid, ...matchState.playersBySocketId[sid] }))
@@ -96,7 +100,9 @@ function computeRoundResult() {
   };
 }
 
+// Conexión de cliente
 io.on("connection", (socket) => {
+  // Registro de jugador
   socket.on("registerPlayer", ({ name }) => {
     // Only allow up to two players in the match
     if (matchState.playerOrder.length >= 2) {
@@ -138,6 +144,7 @@ io.on("connection", (socket) => {
     }
   });
 
+  // Registro de monitor
   socket.on("registerMonitor", () => {
     socket.join("monitors");
     const players = matchState.playerOrder.map(
@@ -148,6 +155,7 @@ io.on("connection", (socket) => {
     });
   });
 
+  // Elección de jugador
   socket.on("playerChoice", ({ choice }) => {
     const player = matchState.playersBySocketId[socket.id];
     if (!player) return;
@@ -187,6 +195,7 @@ io.on("connection", (socket) => {
     io.emit("readyForNextRound");
   });
 
+  // Desconexión de cliente
   socket.on("disconnect", () => {
     const wasPlayer = !!matchState.playersBySocketId[socket.id];
     if (wasPlayer) {
@@ -203,6 +212,7 @@ io.on("connection", (socket) => {
   });
 });
 
+// Inicia servidor
 httpServer.listen(5050, () =>
   console.log(`Server running at http://localhost:${5050}`)
 );

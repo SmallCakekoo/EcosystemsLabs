@@ -1,5 +1,7 @@
+// Conexión Socket.IO
 const socket = io("/", { path: "/real-time" });
 
+// Referencias a elementos DOM
 const nameInput = document.getElementById("player-name");
 const joinBtn = document.getElementById("join-btn");
 const statusP = document.getElementById("status");
@@ -13,6 +15,7 @@ const choiceButtons = Array.from(document.querySelectorAll(".choice"));
 
 let hasJoined = false;
 
+// Evento click para unirse al juego
 joinBtn.addEventListener("click", () => {
   if (hasJoined) return;
   const name = nameInput.value.trim();
@@ -25,12 +28,14 @@ joinBtn.addEventListener("click", () => {
   hasJoined = true;
 });
 
+// Esperando oponente
 socket.on("waitingForOpponent", () => {
   gameSection.style.display = "block";
   choiceButtons.forEach((b) => (b.disabled = true));
   versus.textContent = "Esperando oponente...";
 });
 
+// Partida lista
 socket.on("matchReady", ({ you, opponent }) => {
   document.getElementById("name-section").style.display = "none";
   gameSection.style.display = "block";
@@ -39,6 +44,7 @@ socket.on("matchReady", ({ you, opponent }) => {
   resultDiv.textContent = "Selecciona tu jugada";
 });
 
+// Eventos de botones de elección
 choiceButtons.forEach((btn) => {
   btn.addEventListener("click", () => {
     const choice = btn.getAttribute("data-choice");
@@ -50,8 +56,8 @@ choiceButtons.forEach((btn) => {
   });
 });
 
+// Resultado de ronda
 socket.on("roundResult", ({ p1, p2, winner }) => {
-  // Find my player by name in the versus label
   const [youName] = versus.textContent.split(" vs ");
   const me = p1.name === youName ? p1 : p2;
   const opp = p1.name === youName ? p2 : p1;
@@ -66,20 +72,24 @@ socket.on("roundResult", ({ p1, p2, winner }) => {
   if (drawsSpan) drawsSpan.textContent = String(me.draws || 0);
 });
 
+// Listo para siguiente ronda
 socket.on("readyForNextRound", () => {
   choiceButtons.forEach((b) => (b.disabled = false));
 });
 
+// Jugador se desconectó
 socket.on("playerLeft", () => {
   choiceButtons.forEach((b) => (b.disabled = true));
   resultDiv.textContent = "El oponente salió. Esperando nuevo jugador...";
   versus.textContent = "Esperando oponente...";
 });
 
+// Sala llena
 socket.on("matchFull", () => {
   statusP.textContent = "La sala ya tiene 2 jugadores. Intenta más tarde.";
 });
 
+// Convierte opciones del juego a español
 function humanize(key) {
   if (!key) return "";
   const c = String(key).toLowerCase();

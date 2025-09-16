@@ -1,26 +1,34 @@
+// Conexión Socket.IO
 const socket = io("/", { path: "/real-time" });
 
+// Referencias a elementos DOM
 const playersP = document.getElementById("players");
 const rows = document.getElementById("rows");
 const events = document.getElementById("events");
 
+// Registra como monitor
 socket.emit("registerMonitor");
 
+// Sincroniza jugadores conectados
 socket.on("monitorSync", ({ players }) => {
   playersP.textContent = `Jugadores conectados: ${players.length}`;
 });
 
+// Jugador se unió
 socket.on("playerJoined", (players) => {
   playersP.textContent = `Jugadores conectados: ${players.length}`;
   pushEvent(`Se unió ${players[players.length - 1]}`);
 });
 
+// Mensaje informativo
 socket.on("monitorInfo", ({ message }) => pushEvent(message));
 
+// Partida lista
 socket.on("matchReadyMonitor", (players) => {
   pushEvent(`Partida lista: ${players[0]} vs ${players[1]}`);
 });
 
+// Ronda completada - crea fila en tabla
 socket.on("monitorRound", ({ p1, p2, winner, timestamp }) => {
   const tr = document.createElement("tr");
   const date = new Date(timestamp);
@@ -35,12 +43,14 @@ socket.on("monitorRound", ({ p1, p2, winner, timestamp }) => {
   rows.prepend(tr);
 });
 
+// Agrega evento a la lista
 function pushEvent(text) {
   const li = document.createElement("li");
   li.textContent = text;
   events.prepend(li);
 }
 
+// Convierte opciones del juego a español
 function humanize(key) {
   if (!key) return "";
   const c = String(key).toLowerCase();
