@@ -52,8 +52,8 @@ function determineWinner(choicePlayer1, choicePlayer2) {
 // Calcula resultado completo de la ronda
 function computeRoundResult() {
   const players = matchState.playerOrder
-    .map((sid) => ({ sid, ...matchState.playersBySocketId[sid] }))
-    .filter((p) => !!p);
+    .map((sid) => ({ sid, ...matchState.playersBySocketId[sid] })) // 'sid' es el socketId del jugador
+    .filter((p) => !!p); // '!!p' es true si p no es null o undefined
   if (players.length < 2) return null;
   const [p1, p2] = players;
   if (!p1.choice || !p2.choice) return null;
