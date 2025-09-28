@@ -1,18 +1,21 @@
 const express = require("express");
-const {
-  createUser,
-  getUsers,
-  updateUser,
-  deleteUser,
-} = require("../controllers/users.controller");
 const router = express.Router();
 
-router.get("/users", getUsers);
+const {
+  getAllUsersController,
+  getUsersBasicController,
+  createUserController,
+  updateUserController,
+  deleteUserController,
+} = require("../controllers/users.controller");
 
-router.post("/users", createUser);
+// GET /users/basic → username y email de todos los usuarios
+router.get("/users/basic", getUsersBasicController);
 
-router.patch("/users/:id", updateUser);
-
-router.delete("/users/:id", deleteUser);
+// Rutas existentes para CRUD de usuarios
+router.get("/users", getAllUsersController);
+router.post("/users", createUserController);
+router.put("/users/:id", updateUserController);
+router.delete("/users/:id", deleteUserController);
 
 module.exports = router;
