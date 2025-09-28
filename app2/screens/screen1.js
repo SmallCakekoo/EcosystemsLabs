@@ -9,8 +9,8 @@ export default function renderScreen1() {
         <div class="section">
           <h3>Productos</h3>
           <button id="get-all-products">Todos los productos</button>
-          <button id="get-cheap-products">Productos baratos (&lt;50)</button>
-          <button id="get-electronics">Electrónicos (&gt;30)</button>
+          <button id="get-cheap-products">Productos baratos (<50)</button>
+          <button id="get-electronics">Electrónicos (>30)</button>
           <button id="get-page1">Página 1 (paginación)</button>
           <button id="get-page2">Página 2 (paginación)</button>
         </div>
