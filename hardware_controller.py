@@ -5,9 +5,9 @@ from gpiozero import LED, RGBLED, MCP3008
 from luma.core.interface.serial import spi, noop
 from luma.core.render import canvas
 from luma.led_matrix.device import max7219
-from time import sleep
+from PIL import Image
 
-# Configurar LEDs
+# LEDs individuales
 led_red = LED(17)
 led_green = LED(27)
 led_yellow = LED(22)
@@ -17,68 +17,63 @@ rgb = RGBLED(red=23, green=24, blue=25)
 
 # Matriz MAX7219
 serial = spi(port=0, device=0, gpio=noop())
-device = max7219(serial, cascaded=1, block_orientation=0)
+device = max7219(serial, cascaded=1, block_orientation=0, rotate=0)
 
-# Sensores analógicos (usando MCP3008)
-pot = MCP3008(channel=0)  # Potenciómetro en canal 0
-ldr = MCP3008(channel=1)  # Fotocelda en canal 1
+# Sensores MCP3008
+try:
+    pot = MCP3008(channel=0)
+    ldr = MCP3008(channel=1)
+    sensors_ok = True
+except:
+    sensors_ok = False
+    print(json.dumps({'warning': 'MCP3008 no disponible'}), flush=True)
 
 def control_led(color, state):
-    """Controla LEDs individuales"""
     leds = {'red': led_red, 'green': led_green, 'yellow': led_yellow}
     if color in leds:
-        if state:
-            leds[color].on()
-        else:
-            leds[color].off()
+        leds[color].on() if state else leds[color].off()
 
 def control_rgb(r, g, b):
-    """Controla LED RGB (valores 0-1)"""
-    rgb.color = (r/255, g/255, b/255)
+    rgb.color = (r/255.0, g/255.0, b/255.0)
 
 def control_matrix(pattern):
-    """Muestra patrón en matriz 8x8"""
-    with canvas(device) as draw:
-        for y, row in enumerate(pattern):
-            for x, pixel in enumerate(row):
-                if pixel:
-                    draw.point((x, y), fill="white")
+    img = Image.new('1', (8, 8))
+    pixels = img.load()
+    for y in range(8):
+        for x in range(8):
+            if y < len(pattern) and x < len(pattern[y]):
+                pixels[x, y] = 1 if pattern[y][x] else 0
+    device.display(img)
 
 def read_sensors():
-    """Lee valores de sensores"""
-    return {
-        'potentiometer': pot.value * 1023,  # 0-1023
-        'light': ldr.value * 1023
-    }
+    if sensors_ok:
+        return {
+            'potentiometer': pot.value * 1023,
+            'light': ldr.value * 1023
+        }
+    return {'potentiometer': 512, 'light': 512}
 
 def main():
-    """Procesa comandos desde stdin (JSON)"""
+    print(json.dumps({'status': 'ready'}), flush=True)
+    
     for line in sys.stdin:
         try:
             data = json.loads(line.strip())
-            command = data.get('command')
+            cmd = data.get('command')
             
-            if command == 'led':
+            if cmd == 'led':
                 control_led(data['color'], data['state'])
-                print(json.dumps({'status': 'ok'}))
-                
-            elif command == 'rgb':
+                print(json.dumps({'status': 'ok'}), flush=True)
+            elif cmd == 'rgb':
                 control_rgb(data['r'], data['g'], data['b'])
-                print(json.dumps({'status': 'ok'}))
-                
-            elif command == 'matrix':
+                print(json.dumps({'status': 'ok'}), flush=True)
+            elif cmd == 'matrix':
                 control_matrix(data['pattern'])
-                print(json.dumps({'status': 'ok'}))
-                
-            elif command == 'read_sensors':
-                sensors = read_sensors()
-                print(json.dumps(sensors))
-                
-            sys.stdout.flush()
-            
+                print(json.dumps({'status': 'ok'}), flush=True)
+            elif cmd == 'read_sensors':
+                print(json.dumps(read_sensors()), flush=True)
         except Exception as e:
-            print(json.dumps({'error': str(e)}))
-            sys.stdout.flush()
+            print(json.dumps({'error': str(e)}), flush=True)
 
 if __name__ == '__main__':
     try:
@@ -88,3 +83,4 @@ if __name__ == '__main__':
         led_green.close()
         led_yellow.close()
         rgb.close()
+        device.clear()

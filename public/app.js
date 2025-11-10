@@ -1,3 +1,45 @@
+// Conectar a Socket.io
+const socket = io(); // Se conecta automáticamente al servidor que sirve la página
+
+socket.on('connect', () => {
+    console.log('✅ Conectado al servidor');
+    updateConnectionStatus(true);
+});
+
+socket.on('disconnect', () => {
+    console.log('❌ Desconectado del servidor');
+    updateConnectionStatus(false);
+});
+
+// Recibir datos de sensores en tiempo real
+socket.on('sensorData', (data) => {
+    // Actualizar potenciómetro (lectura real desde hardware)
+    if (data.potentiometer !== undefined) {
+        const potPercent = Math.round((data.potentiometer / 1023) * 100);
+        document.getElementById('potValue').textContent = potPercent + '%';
+        
+        const angle = (potPercent / 100) * 270 - 135;
+        document.getElementById('potNeedle').style.transform = `rotate(${angle}deg)`;
+    }
+    
+    // Actualizar fotocelda (lectura real desde hardware)
+    if (data.light !== undefined) {
+        const lightValue = Math.round(data.light);
+        document.getElementById('photoValue').textContent = lightValue;
+        
+        const opacity = lightValue / 1023;
+        document.getElementById('photoOverlay').style.opacity = opacity;
+    }
+});
+
+function updateConnectionStatus(connected) {
+    const statusEl = document.getElementById('connectionStatus');
+    if (statusEl) {
+        statusEl.textContent = connected ? 'Conectado' : 'Desconectado';
+        statusEl.style.color = connected ? '#10b981' : '#ef4444';
+    }
+}
+
 // Estado de los LEDs individuales
 const ledStates = {
     ledRed: false,
@@ -21,19 +63,27 @@ let photoValue = 512;
 // Estado de la matriz 8x8
 const matrixState = Array(8).fill().map(() => Array(8).fill(false));
 
-// Inicializar LEDs individuales
+// Inicializar LEDs individuales (ACTUALIZADO)
 function initLEDs() {
     ['ledRed', 'ledGreen', 'ledYellow'].forEach(id => {
         const btn = document.getElementById(id);
         btn.addEventListener('click', () => {
             ledStates[id] = !ledStates[id];
             btn.classList.toggle('active');
+            
+            // Enviar al servidor
+            const colorMap = { ledRed: 'red', ledGreen: 'green', ledYellow: 'yellow' };
+            socket.emit('ledControl', {
+                color: colorMap[id],
+                state: ledStates[id]
+            });
+            
             console.log(`${id}: ${ledStates[id]}`);
         });
     });
 }
 
-// Inicializar LED RGB
+// Inicializar LED RGB (ACTUALIZADO)
 function initRGB() {
     const redSlider = document.getElementById('redSlider');
     const greenSlider = document.getElementById('greenSlider');
@@ -57,6 +107,9 @@ function initRGB() {
         greenSlider.style.background = `linear-gradient(to right, #000 0%, #00ff00 ${(rgbState.g/255)*100}%, #e0e5ec ${(rgbState.g/255)*100}%)`;
         blueSlider.style.background = `linear-gradient(to right, #000 0%, #0000ff ${(rgbState.b/255)*100}%, #e0e5ec ${(rgbState.b/255)*100}%)`;
         
+        // Enviar al servidor
+        socket.emit('rgbControl', rgbState);
+        
         console.log('RGB:', rgbState);
     }
     
@@ -67,7 +120,7 @@ function initRGB() {
     updateRGB();
 }
 
-// Inicializar Potenciómetro
+// Inicializar Potenciómetro (mantener los sliders para pruebas)
 function initPotentiometer() {
     const slider = document.getElementById('potSlider');
     const needle = document.getElementById('potNeedle');
@@ -82,14 +135,14 @@ function initPotentiometer() {
         
         slider.style.background = `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${potValue}%, #e0e5ec ${potValue}%)`;
         
-        console.log('Potenciómetro:', potValue);
+        console.log('Potenciómetro (manual):', potValue);
     }
     
     slider.addEventListener('input', updatePot);
     updatePot();
 }
 
-// Inicializar Matriz 8x8
+// Inicializar Matriz 8x8 (ACTUALIZADO)
 function initMatrix() {
     const grid = document.getElementById('matrixGrid');
     const clearBtn = document.getElementById('clearMatrix');
@@ -105,6 +158,10 @@ function initMatrix() {
             pixel.addEventListener('click', () => {
                 matrixState[i][j] = !matrixState[i][j];
                 pixel.classList.toggle('active');
+                
+                // Enviar patrón al servidor
+                socket.emit('matrixControl', { pattern: matrixState });
+                
                 console.log(`Matriz [${i}][${j}]:`, matrixState[i][j]);
             });
             
@@ -122,11 +179,15 @@ function initMatrix() {
         document.querySelectorAll('.matrix-pixel').forEach(pixel => {
             pixel.classList.remove('active');
         });
+        
+        // Enviar matriz vacía al servidor
+        socket.emit('matrixControl', { pattern: matrixState });
+        
         console.log('Matriz limpiada');
     });
 }
 
-// Inicializar Fotocelda
+// Inicializar Fotocelda (mantener slider para pruebas)
 function initPhotocell() {
     const slider = document.getElementById('photoSlider');
     const overlay = document.getElementById('photoOverlay');
@@ -141,7 +202,7 @@ function initPhotocell() {
         
         slider.style.background = `linear-gradient(to right, #fbbf24 0%, #fbbf24 ${(photoValue/1023)*100}%, #e0e5ec ${(photoValue/1023)*100}%)`;
         
-        console.log('Fotocelda:', photoValue);
+        console.log('Fotocelda (manual):', photoValue);
     }
     
     slider.addEventListener('input', updatePhoto);
