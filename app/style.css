@@ -1,0 +1,364 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: linear-gradient(135deg, #e2e2e2 0%, #f0f0f0 100%);
+    min-height: 100vh;
+    padding: 2rem;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.title {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #5a5a5a;
+    text-shadow: 2px 2px 4px rgba(255,255,255,0.8), -2px -2px 4px rgba(0,0,0,0.2);
+    margin-bottom: 0.5rem;
+}
+
+.subtitle {
+    color: #888;
+    font-size: 1.2rem;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+}
+
+.card {
+    background: linear-gradient(145deg, #e6e6e6, #ffffff);
+    box-shadow: 8px 8px 16px #d1d1d1, -8px -8px 16px #ffffff;
+    border-radius: 1.5rem;
+    padding: 2rem;
+}
+
+.matrix-card {
+    grid-column: span 2;
+}
+
+.card-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.5rem;
+    color: #5a5a5a;
+    margin-bottom: 1.5rem;
+}
+
+.icon {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+/* LEDs Individuales */
+.led-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.led-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.led-label {
+    color: #666;
+    font-weight: 500;
+}
+
+.led-button {
+    width: 5rem;
+    height: 5rem;
+    border-radius: 50%;
+    border: none;
+    background: linear-gradient(145deg, #e6e6e6, #ffffff);
+    box-shadow: 5px 5px 10px #d1d1d1, -5px -5px 10px #ffffff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.led-button:active {
+    box-shadow: inset 5px 5px 10px #d1d1d1, inset -5px -5px 10px #ffffff;
+}
+
+.led-button.active[data-color="red"] {
+    background: #ef4444;
+    box-shadow: inset 4px 4px 8px rgba(0,0,0,0.3), inset -4px -4px 8px rgba(255,100,100,0.2), 0 0 30px rgba(255,0,0,0.6);
+}
+
+.led-button.active[data-color="green"] {
+    background: #22c55e;
+    box-shadow: inset 4px 4px 8px rgba(0,0,0,0.3), inset -4px -4px 8px rgba(100,255,100,0.2), 0 0 30px rgba(0,255,0,0.6);
+}
+
+.led-button.active[data-color="yellow"] {
+    background: #fbbf24;
+    box-shadow: inset 4px 4px 8px rgba(0,0,0,0.3), inset -4px -4px 8px rgba(255,255,100,0.2), 0 0 30px rgba(255,255,0,0.6);
+}
+
+.led-button.active::after {
+    content: '';
+    position: absolute;
+    width: 0.75rem;
+    height: 0.75rem;
+    background: white;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* RGB Controls */
+.rgb-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.rgb-preview {
+    width: 8rem;
+    height: 8rem;
+    border-radius: 50%;
+    margin: 0 auto 1rem;
+    background: rgb(255, 0, 0);
+    box-shadow: inset 4px 4px 8px rgba(0,0,0,0.3), inset -4px -4px 8px rgba(255,255,255,0.1);
+    transition: all 0.3s ease;
+}
+
+.slider-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.slider-label {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.slider {
+    width: 100%;
+    height: 12px;
+    border-radius: 10px;
+    outline: none;
+    box-shadow: inset 3px 3px 6px #d1d1d1, inset -3px -3px 6px #ffffff;
+    cursor: pointer;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #ffffff, #e6e6e6);
+    cursor: pointer;
+    box-shadow: 4px 4px 8px #d1d1d1, -4px -4px 8px #ffffff;
+}
+
+.slider::-moz-range-thumb {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #ffffff, #e6e6e6);
+    cursor: pointer;
+    border: none;
+    box-shadow: 4px 4px 8px #d1d1d1, -4px -4px 8px #ffffff;
+}
+
+/* Potenciómetro */
+.pot-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.pot-display {
+    width: 12rem;
+    height: 12rem;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #e6e6e6, #ffffff);
+    box-shadow: 5px 5px 10px #d1d1d1, -5px -5px 10px #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.pot-needle {
+    position: absolute;
+    width: 0.5rem;
+    height: 5rem;
+    background: linear-gradient(to bottom, #3b82f6, #1e40af);
+    border-radius: 0.25rem;
+    transform-origin: bottom center;
+    transform: rotate(-135deg);
+    transition: transform 0.3s ease;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.5);
+}
+
+.pot-value {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #5a5a5a;
+    z-index: 1;
+}
+
+/* Matriz 8x8 */
+.matrix-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.clear-button {
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.75rem;
+    border: none;
+    background: linear-gradient(145deg, #e6e6e6, #ffffff);
+    box-shadow: 5px 5px 10px #d1d1d1, -5px -5px 10px #ffffff;
+    color: #666;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.clear-button:hover {
+    color: #ef4444;
+}
+
+.clear-button:active {
+    box-shadow: inset 5px 5px 10px #d1d1d1, inset -5px -5px 10px #ffffff;
+}
+
+.matrix-container {
+    display: flex;
+    justify-content: center;
+}
+
+.matrix-grid {
+    display: inline-grid;
+    grid-template-columns: repeat(8, 3rem);
+    gap: 0.5rem;
+    padding: 1.5rem;
+    border-radius: 1rem;
+    background: linear-gradient(145deg, #ffffff, #e6e6e6);
+    box-shadow: inset 5px 5px 10px #d1d1d1, inset -5px -5px 10px #ffffff;
+}
+
+.matrix-pixel {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 0.5rem;
+    border: none;
+    background: linear-gradient(145deg, #e6e6e6, #ffffff);
+    box-shadow: 5px 5px 10px #d1d1d1, -5px -5px 10px #ffffff;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.matrix-pixel:active {
+    transform: scale(0.95);
+}
+
+.matrix-pixel.active {
+    background: #ef4444;
+    box-shadow: inset 2px 2px 5px rgba(0,0,0,0.4), inset -2px -2px 5px rgba(255,100,100,0.3), 0 0 15px rgba(255,0,0,0.4);
+}
+
+/* Fotocelda */
+.photo-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.photo-display {
+    width: 10rem;
+    height: 10rem;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #ffffff, #e6e6e6);
+    box-shadow: inset 5px 5px 10px #d1d1d1, inset -5px -5px 10px #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.photo-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #fef3c7, #fb923c);
+    transition: opacity 0.3s ease;
+}
+
+.photo-icon {
+    width: 4rem;
+    height: 4rem;
+    color: #666;
+    z-index: 1;
+}
+
+.photo-value-display {
+    text-align: center;
+}
+
+.photo-value {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #5a5a5a;
+    margin-bottom: 0.5rem;
+}
+
+.photo-label {
+    font-size: 0.875rem;
+    color: #888;
+}
+
+@media (max-width: 768px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .matrix-card {
+        grid-column: span 1;
+    }
+    
+    .matrix-grid {
+        grid-template-columns: repeat(8, 2.5rem);
+    }
+    
+    .matrix-pixel {
+        width: 2.5rem;
+        height: 2.5rem;
+    }
+}
