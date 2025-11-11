@@ -13,22 +13,32 @@ socket.on('disconnect', () => {
 
 // Recibir datos de sensores en tiempo real
 socket.on('sensorData', (data) => {
-    // Actualizar potenciómetro (lectura real desde hardware)
     if (data.potentiometer !== undefined) {
         const potPercent = Math.round((data.potentiometer / 1023) * 100);
+        
+        // Actualizar display
         document.getElementById('potValue').textContent = potPercent + '%';
         
+        // Actualizar aguja
         const angle = (potPercent / 100) * 270 - 135;
         document.getElementById('potNeedle').style.transform = `rotate(${angle}deg)`;
+        
+        // ✅ AGREGAR: Actualizar el slider
+        const slider = document.getElementById('potSlider');
+        slider.value = potPercent;
+        slider.style.background = `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${potPercent}%, #e0e5ec ${potPercent}%)`;
     }
     
-    // Actualizar fotocelda (lectura real desde hardware)
     if (data.light !== undefined) {
         const lightValue = Math.round(data.light);
         document.getElementById('photoValue').textContent = lightValue;
         
         const opacity = lightValue / 1023;
         document.getElementById('photoOverlay').style.opacity = opacity;
+        
+        const photoSlider = document.getElementById('photoSlider');
+        photoSlider.value = lightValue;
+        photoSlider.style.background = `linear-gradient(to right, #fbbf24 0%, #fbbf24 ${(lightValue/1023)*100}%, #e0e5ec ${(lightValue/1023)*100}%)`;
     }
 });
 
