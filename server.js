@@ -130,7 +130,7 @@ io.on('connection', (socket) => {
     });
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = 3000;
 server.listen(PORT, '0.0.0.0', () => {
     console.log(`🚀 Servidor corriendo en http://0.0.0.0:${PORT}`);
     console.log(`📱 Accede desde tu navegador`);
